@@ -1,5 +1,7 @@
 use std::{fs::File, io, path::Path};
 
+use crate::{Byte, Word};
+
 const BIOS_SIZE: usize = 0x100;
 
 pub struct Bios([u8; BIOS_SIZE]);
@@ -25,7 +27,7 @@ impl Bios {
         Self::from_read(&mut file)
     }
 
-    pub fn read(&self, address: u16) -> u8 {
-        self.0[address as usize]
+    pub fn read_byte(&self, address: Word) -> Byte {
+        Byte::new(self.0[address.get() as usize])
     }
 }

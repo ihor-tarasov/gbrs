@@ -7,8 +7,14 @@ fn init_bus() -> Bus {
 
 fn main() {
     let mut bus = init_bus();
-    let mut cpu = Cpu::new();
+    let mut cpu = Cpu::default();
     loop {
-        let _cycles = gbrs::execute(&mut cpu, &mut bus);
+        match gbrs::execute(&mut cpu, &mut bus) {
+            Ok(_cycles) => {}
+            Err(error) => {
+                eprintln!("Error: {error}");
+                break;
+            }
+        }
     }
 }
