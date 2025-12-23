@@ -4,6 +4,8 @@ use std::fmt;
 pub struct Byte(u8);
 
 impl Byte {
+    pub const ZERO: Self = Self(0x00);
+
     pub const fn new(value: u8) -> Self {
         Self(value)
     }
@@ -15,7 +17,7 @@ impl Byte {
 
 impl fmt::Debug for Byte {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "0x{:02X}", self.0)
+        write!(f, "{self}")
     }
 }
 

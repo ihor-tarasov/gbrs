@@ -60,7 +60,7 @@ impl AddAssign<u16> for Word {
 
 impl fmt::Debug for Word {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "0x{:04X}", self.0)
+        write!(f, "{self}")
     }
 }
 
