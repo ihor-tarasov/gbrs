@@ -15,7 +15,7 @@ pub fn execute(cpu: &mut Cpu, bus: &mut Bus) -> Result<u32> {
 // Flags ZNHC: - - - -
 fn ld_sp_n16(cpu: &mut Cpu, bus: &mut Bus) -> Result<u32> {
     let n16 = bus.read_word(cpu.pc + 1)?;
-    println!("{}: LD SP, {n16}", cpu.pc);
+    log::debug!("{}: LD SP, {n16}", cpu.pc);
     cpu.sp = n16;
     cpu.pc += 3;
     Ok(12)
@@ -26,7 +26,7 @@ fn ld_sp_n16(cpu: &mut Cpu, bus: &mut Bus) -> Result<u32> {
 // T-cycles:   4
 // Flags ZNHC: 1 0 0 0
 fn xor_a_a(cpu: &mut Cpu) -> Result<u32> {
-    println!("{}: XOR A, A", cpu.pc);
+    log::debug!("{}: XOR A, A", cpu.pc);
 
     // A XOR A = 0
     cpu.a = Byte::ZERO;

@@ -6,13 +6,14 @@ fn init_bus() -> Bus {
 }
 
 fn main() {
+    simple_logger::init().unwrap();
     let mut bus = init_bus();
     let mut cpu = Cpu::default();
     loop {
         match gbrs::execute(&mut cpu, &mut bus) {
             Ok(_cycles) => {}
             Err(error) => {
-                eprintln!("Error: {error}");
+                log::error!("Error: {error}");
                 break;
             }
         }
