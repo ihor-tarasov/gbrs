@@ -1,14 +1,17 @@
-use gbrs::{Bios, Bus, Cpu};
+use gbrs::{BIOS, Bus, CPU, PPU};
 
 fn init_bus() -> Bus {
-    let bios = Bios::load("dmg_boot.bin").unwrap();
-    Bus::new(bios)
+    let bios = BIOS::load("dmg_boot.bin").unwrap();
+    Bus {
+        bios,
+        ppu: PPU::new(),
+    }
 }
 
 fn main() {
     simple_logger::init().unwrap();
     let mut bus = init_bus();
-    let mut cpu = Cpu::default();
+    let mut cpu = CPU::default();
     loop {
         match gbrs::execute(&mut cpu, &mut bus) {
             Ok(_cycles) => {}

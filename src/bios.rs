@@ -4,9 +4,9 @@ use crate::{Byte, Word};
 
 const BIOS_SIZE: usize = 0x100;
 
-pub struct Bios([u8; BIOS_SIZE]);
+pub struct BIOS([u8; BIOS_SIZE]);
 
-impl Bios {
+impl BIOS {
     pub const START: u16 = 0x0000;
     pub const END: u16 = 0x00FF;
 

@@ -1,7 +1,7 @@
 use crate::{Byte, Flags, Word};
 
 #[derive(Default)]
-pub struct Cpu {
+pub struct CPU {
     pub a: Byte,
     pub f: Flags,
     pub h: Byte,
@@ -10,7 +10,7 @@ pub struct Cpu {
     pub sp: Word,
 }
 
-impl Cpu {
+impl CPU {
     pub const fn hl(&self) -> Word {
         Word::from_bytes(self.h, self.l)
     }
