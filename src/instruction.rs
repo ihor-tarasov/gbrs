@@ -5,6 +5,7 @@ pub fn execute(cpu: &mut Cpu, bus: &mut Bus) -> Result<u32> {
     match opcode.get() {
         0x21 => ld_hl_n16(cpu, bus),
         0x31 => ld_sp_n16(cpu, bus),
+        0x32 => ld_hl_dec_a(cpu, bus),
         0xAF => xor_a_a(cpu),
         _ => Err(Error::Opcode(opcode)),
     }
@@ -36,6 +37,19 @@ fn ld_sp_n16(cpu: &mut Cpu, bus: &mut Bus) -> Result<u32> {
     cpu.sp = n16;
     cpu.pc += 3;
     Ok(12)
+}
+
+// opcode:     0x32
+// mnemonic:   LD [HL-], A
+// T-cycles:   8
+// Flags ZNHC: - - - -
+fn ld_hl_dec_a(cpu: &mut Cpu, bus: &mut Bus) -> Result<u32> {
+    log::debug!("{}: LD [HL-], A", cpu.pc);
+    let address = cpu.hl();
+    bus.write(address, cpu.a)?;
+    cpu.dec_hl();
+    cpu.pc += 1;
+    Ok(8)
 }
 
 // opcode:     0xAF
