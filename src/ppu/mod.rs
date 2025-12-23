@@ -24,4 +24,10 @@ impl PPU {
     pub fn vram_blocked_for_cpu(&self) -> bool {
         self.lcdc.get(LCDCFlag::LCDPPUEnable) && self.stat.ppu_mode() == PPUMode::DRAWING_PIXELS
     }
+
+    pub fn oam_blocked_for_cpu(&self) -> bool {
+        self.lcdc.get(LCDCFlag::LCDPPUEnable)
+            && (self.stat.ppu_mode() == PPUMode::OAM_SCAN
+                || self.stat.ppu_mode() == PPUMode::DRAWING_PIXELS)
+    }
 }
