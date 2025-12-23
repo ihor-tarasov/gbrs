@@ -1,2 +1,2 @@
 # gbrs
-GameBoy emulated written in Rust
+GameBoy emulator written in Rust
