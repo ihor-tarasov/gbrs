@@ -27,7 +27,7 @@ impl Bios {
         Self::from_read(&mut file)
     }
 
-    pub fn read_byte(&self, address: Word) -> Byte {
+    pub fn read(&self, address: Word) -> Byte {
         Byte::new(self.0[address.get() as usize])
     }
 }

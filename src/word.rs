@@ -18,7 +18,7 @@ impl Word {
     }
 
     pub const fn from_bytes(hi: Byte, lo: Byte) -> Self {
-        Self(u16::from_le_bytes([hi.get(), lo.get()]))
+        Self(u16::from_le_bytes([lo.get(), hi.get()]))
     }
 }
 

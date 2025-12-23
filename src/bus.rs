@@ -9,17 +9,10 @@ impl Bus {
         Self { bios }
     }
 
-    pub fn read_byte(&self, address: Word) -> Result<Byte> {
+    pub fn read(&self, address: Word) -> Result<Byte> {
         match address.get() {
-            Bios::START..=Bios::END => Ok(self.bios.read_byte(address)),
+            Bios::START..=Bios::END => Ok(self.bios.read(address)),
             _ => Err(Error::Address(address)),
         }
-    }
-
-    pub fn read_word(&self, address: Word) -> Result<Word> {
-        Ok(Word::from_bytes(
-            self.read_byte(address)?,
-            self.read_byte(address + 1)?,
-        ))
     }
 }
