@@ -9,6 +9,6 @@ fn main() {
     let mut bus = init_bus();
     let mut cpu = Cpu::new();
     loop {
-        cpu.step(&mut bus);
+        let _cycles = gbrs::execute(&mut cpu, &mut bus);
     }
 }
