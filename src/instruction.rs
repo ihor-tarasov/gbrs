@@ -11,6 +11,7 @@ pub fn execute(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
         0x3E => ld_r_n8(bus, &mut cpu.pc, &mut cpu.a, "A"),
         0xAF => xor_a_a(cpu),
         0xCB => cb(cpu, bus),
+        0xE2 => ldh_c_a(cpu, bus),
         _ => Err(Error::Opcode(opcode)),
     }
 }
@@ -93,6 +94,18 @@ fn xor_a_a(cpu: &mut CPU) -> Result<u32> {
     cpu.f = Flags::new(true, false, false, false);
     cpu.pc += 1;
     Ok(4)
+}
+
+// opcode:     0xE2
+// mnemonic:   LDH [C], A
+// T-cycles:   8
+// Flags ZNHC: - - - -
+fn ldh_c_a(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
+    log::debug!("{}: LDH [C], A", cpu.pc);
+    let address = Word::from_bytes(Byte::new(0xFF), cpu.c);
+    bus.write(address, cpu.a)?;
+    cpu.pc += 1;
+    Ok(8)
 }
 
 fn cb(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
