@@ -1,13 +1,30 @@
-use crate::{Bus, Byte, CPU, Error, Flags, Result, Word};
+use crate::{Bus, Byte, CPU, Error, Flag, Flags, Result, Word};
 
 pub fn execute(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
     let opcode = bus.read(cpu.pc)?;
     match opcode.get() {
+        0x20 => jr_nz_e8(cpu, bus),
         0x21 => ld_hl_n16(cpu, bus),
         0x31 => ld_sp_n16(cpu, bus),
         0x32 => ld_hl_dec_a(cpu, bus),
         0xAF => xor_a_a(cpu),
+        0xCB => cb(cpu, bus),
         _ => Err(Error::Opcode(opcode)),
+    }
+}
+
+// opcode:     0x20
+// mnemonic:   JR NZ, e8
+// T-cycles:   12/8
+// Flags ZNHC: - - - -
+fn jr_nz_e8(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
+    let offset = bus.read(cpu.pc + 1)?.get() as i8;
+    if cpu.f.get(Flag::Zero) {
+        cpu.pc += 2;
+        Ok(8)
+    } else {
+        cpu.pc = Word::new((cpu.pc + 2).get().wrapping_add_signed(offset as i16));
+        Ok(12)
     }
 }
 
@@ -67,4 +84,27 @@ fn xor_a_a(cpu: &mut CPU) -> Result<u32> {
 
     cpu.pc += 1;
     Ok(4)
+}
+
+fn cb(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
+    let opcode = bus.read(cpu.pc + 1)?;
+    match opcode.get() {
+        0x7C => bit(cpu, 7, cpu.h, "H"),
+        _ => Err(Error::CBOpcode(opcode)),
+    }
+}
+
+// mnemonic:   BIT ?, ?
+// T-cycles:   8
+// Flags ZNHC: Z 0 1 -
+fn bit(cpu: &mut CPU, bit: u8, reg: Byte, name: &str) -> Result<u32> {
+    log::debug!("{}: BIT {bit}, {name}", cpu.pc);
+    let set = reg.get() & (1 << bit) != 0;
+    cpu.f = cpu
+        .f
+        .with(Flag::Zero, !set)
+        .with(Flag::Subtract, false)
+        .with(Flag::Half, true);
+    cpu.pc += 2;
+    Ok(8)
 }
