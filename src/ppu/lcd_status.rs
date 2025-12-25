@@ -1,11 +1,13 @@
+use crate::Byte;
+
 #[repr(u8)]
 #[derive(Clone, Copy)]
 pub enum LCDSFlag {
-    LYCEqLY = 0b0000_0100,
-    Mode0Int = 0b0000_1000,
-    Mode1Int = 0b0001_0000,
-    Mode2Int = 0b0010_0000,
-    LYCInt = 0b0100_0000,
+    LYCEqLY = 2,
+    Mode0Int = 3,
+    Mode1Int = 4,
+    Mode2Int = 5,
+    LYCInt = 6,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -19,27 +21,22 @@ impl PPUMode {
 }
 
 #[derive(Clone, Copy)]
-pub struct LCDStatus(u8);
+pub struct LCDStatus(Byte);
 
 impl LCDStatus {
     pub const fn new() -> Self {
-        Self(0)
+        Self(Byte::ZERO)
     }
 
     pub const fn ppu_mode(self) -> PPUMode {
-        PPUMode(self.0 & 0b0000_0011)
+        PPUMode(self.0.get() & 0b0000_0011)
     }
 
     pub const fn get(self, flag: LCDSFlag) -> bool {
-        self.0 & (flag as u8) != 0
+        self.0.bit(flag as u8)
     }
 
-    pub const fn with(mut self, flag: LCDSFlag, set: bool) -> Self {
-        if set {
-            self.0 |= flag as u8;
-        } else {
-            self.0 &= !(flag as u8);
-        }
-        self
+    pub const fn with(self, flag: LCDSFlag, set: bool) -> Self {
+        Self(self.0.with_bit(flag as u8, set))
     }
 }

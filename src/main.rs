@@ -1,10 +1,11 @@
-use gbrs::{BIOS, Bus, CPU, PPU};
+use gbrs::{BIOS, Bus, CPU, apu::APU, ppu::PPU};
 
 fn init_bus() -> Bus {
     let bios = BIOS::load("dmg_boot.bin").unwrap();
     Bus {
         bios,
         ppu: PPU::new(),
+        apu: APU::new(),
     }
 }
 

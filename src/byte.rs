@@ -17,6 +17,19 @@ impl Byte {
     pub const fn get(self) -> u8 {
         self.0
     }
+
+    pub const fn bit(self, bit: u8) -> bool {
+        self.0 & (1 << bit) != 0
+    }
+
+    pub const fn with_bit(mut self, bit: u8, set: bool) -> Self {
+        if set {
+            self.0 |= 1 << bit;
+        } else {
+            self.0 &= !(1 << bit);
+        }
+        self
+    }
 }
 
 impl Add for Byte {

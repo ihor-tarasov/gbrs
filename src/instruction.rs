@@ -89,13 +89,8 @@ fn ld_hl_dec_a(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
 // Flags ZNHC: 1 0 0 0
 fn xor_a_a(cpu: &mut CPU) -> Result<u32> {
     log::debug!("{}: XOR A, A", cpu.pc);
-
-    // A XOR A = 0
     cpu.a = Byte::ZERO;
-
-    // Flags: Z N H C = 1 0 0 0
     cpu.f = Flags::new(true, false, false, false);
-
     cpu.pc += 1;
     Ok(4)
 }
@@ -113,7 +108,7 @@ fn cb(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
 // Flags ZNHC: Z 0 1 -
 fn bit(cpu: &mut CPU, bit: u8, reg: Byte, name: &str) -> Result<u32> {
     log::debug!("{}: BIT {bit}, {name}", cpu.pc);
-    let set = reg.get() & (1 << bit) != 0;
+    let set = reg.bit(bit);
     cpu.f = cpu
         .f
         .with(Flag::Zero, !set)
