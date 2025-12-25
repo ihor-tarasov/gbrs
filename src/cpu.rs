@@ -4,6 +4,8 @@ use crate::{Byte, Flags, Word};
 pub struct CPU {
     pub a: Byte,
     pub f: Flags,
+    pub b: Byte,
+    pub c: Byte,
     pub h: Byte,
     pub l: Byte,
     pub pc: Word,

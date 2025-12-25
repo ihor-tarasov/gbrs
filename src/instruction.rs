@@ -3,14 +3,28 @@ use crate::{Bus, Byte, CPU, Error, Flag, Flags, Result, Word};
 pub fn execute(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
     let opcode = bus.read(cpu.pc)?;
     match opcode.get() {
+        0x0E => ld_c_n8(cpu, bus),
         0x20 => jr_nz_e8(cpu, bus),
         0x21 => ld_hl_n16(cpu, bus),
         0x31 => ld_sp_n16(cpu, bus),
         0x32 => ld_hl_dec_a(cpu, bus),
+        0x3E => ld_a_n8(cpu, bus),
         0xAF => xor_a_a(cpu),
         0xCB => cb(cpu, bus),
         _ => Err(Error::Opcode(opcode)),
     }
+}
+
+// opcode:     0x0E
+// mnemonic:   LD C, n8
+// T-cycles:   8
+// Flags ZNHC: - - - -
+fn ld_c_n8(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
+    let value = bus.read(cpu.pc + 1)?;
+    log::debug!("{}: LD C, {value}", cpu.pc);
+    cpu.c = value;
+    cpu.pc += 2;
+    Ok(8)
 }
 
 // opcode:     0x20
@@ -19,6 +33,7 @@ pub fn execute(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
 // Flags ZNHC: - - - -
 fn jr_nz_e8(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
     let offset = bus.read(cpu.pc + 1)?.get() as i8;
+    log::debug!("{}: JR NZ, {offset}", cpu.pc);
     if cpu.f.get(Flag::Zero) {
         cpu.pc += 2;
         Ok(8)
@@ -66,6 +81,18 @@ fn ld_hl_dec_a(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
     bus.write(address, cpu.a)?;
     cpu.dec_hl();
     cpu.pc += 1;
+    Ok(8)
+}
+
+// opcode:     0x3E
+// mnemonic:   LD A, n8
+// T-cycles:   8
+// Flags ZNHC: - - - -
+fn ld_a_n8(cpu: &mut CPU, bus: &mut Bus) -> Result<u32> {
+    let value = bus.read(cpu.pc + 1)?;
+    log::debug!("{}: LD A, {value}", cpu.pc);
+    cpu.a = value;
+    cpu.pc += 2;
     Ok(8)
 }
 
