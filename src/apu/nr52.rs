@@ -1,7 +1,7 @@
 use crate::{Byte, apu::Channel};
 
 const AUDIO_ON_OFF_BIT: u8 = 7;
-const DATA_MASK: u8 = 0b1000_1111;
+const WRITE_DATA_MASK: u8 = 0b1000_0000;
 
 #[derive(Clone, Copy)]
 pub struct NR52(Byte);
@@ -30,6 +30,6 @@ impl NR52 {
     }
 
     pub const fn write(self, byte: Byte) -> Self {
-        Self(Byte::new(byte.get() & DATA_MASK))
+        Self(Byte::new(byte.get() & WRITE_DATA_MASK))
     }
 }

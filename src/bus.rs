@@ -1,6 +1,6 @@
 use crate::{
     BIOS, Byte, Error, Result, Word,
-    apu::{APU, NR52},
+    apu::{APU, NR52, NRX1},
     ppu::{PPU, VRAM},
 };
 
@@ -33,6 +33,12 @@ impl Bus {
             VRAM::START..=VRAM::END => Ok(if !self.ppu.vram_blocked_for_cpu() {
                 self.ppu.vram.write(address - VRAM::START, byte);
             }),
+            NRX1::ADDRESS => {
+                if self.apu.nr52.audio_on() {
+                    self.apu.nr11 = self.apu.nr11.write(byte);
+                }
+                Ok(())
+            }
             NR52::ADDRESS => {
                 let nr52 = self.apu.nr52.write(byte);
                 if !nr52.audio_on() {
